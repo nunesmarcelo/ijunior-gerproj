@@ -1,0 +1,110 @@
+<html>
+
+<head>
+    <script>
+        window.onload=update;
+        AJAX = { //"Objeto-classe"
+            get: function(url, callback) { //Recebe a URL para fazer a requisição e uma função de callback
+                var xhttp = new XMLHttpRequest(); //Instancia a classe de AJAX
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) { //Ao finalizar com sucesso a requisição
+                        callback(JSON.parse(this.responseText));
+                        /* Invoca a função passada como argumento,
+                         * passando o resultado da requisição
+                         * transformado em objeto JSON como parâmetro.
+                         */
+                    }
+                };
+                xhttp.open("GET", url, true); //Inicia a requisição
+                xhttp.send(); //Envia a requisição
+            }
+        }
+
+        function add() {
+            n = document.fadd.anome.value;
+            c = document.fadd.aconteudo.value;
+            AJAX.get('regs.php?action=add&nome=' + n + '&conteudo=' + c, update);
+            document.getElementById('add').hidden = true;
+            document.fadd.anome.value="";
+            document.fadd.aconteudo.value="";
+        }
+
+        function edit() {
+            i = document.fedit.eid.value;
+            n = document.fedit.enome.value;
+            c = document.fedit.econteudo.value;
+            AJAX.get('regs.php?action=edit&id=' + i + '&nome=' + n + '&conteudo=' + c, update);
+            document.getElementById('edit').hidden = true;
+        }
+
+        function del(id) {
+            if (confirm("Deletar id " + id + "?")) {
+                AJAX.get('regs.php?action=delete&id=' + id, update);
+            }
+        }
+
+        function s_edit(id) {
+            document.fedit.eid.value = id;
+            document.fedit.enome.value = "Carregando...";
+            document.fedit.enome.disabled = true;
+            document.fedit.econteudo.value = "Carregando...";
+            document.fedit.econteudo.disabled = true;
+            document.getElementById('edit').hidden = false;
+            AJAX.get('regs.php?action=show&id=' + id, function(j) {
+                document.fedit.enome.value = j.data[0].nome;
+                document.fedit.enome.disabled = false;
+                document.fedit.econteudo.value = j.data[0].conteudo;
+                document.fedit.econteudo.disabled = false;
+            });
+        }
+
+        function update() {
+            document.getElementById("regs").innerHTML = "Carregando...";
+
+            AJAX.get('regs.php?action=list', function(j) {
+                regs = "";
+                for (i = 0; i < j.data.length; i++) {
+                    regs += "<div><h2>" + j.data[i].nome + "</h2><p>" + j.data[i].conteudo + "</p><div style='text-align: right'><a href='#' onclick='s_edit(" + j.data[i].id + ")'>Editar</a> | <a href='#' onclick='del(" + j.data[i].id + ")'>Excluir</a></div></div>";
+                }
+                document.getElementById("regs").innerHTML = regs;
+            });
+        }
+
+    </script>
+</head>
+
+<body>
+    <h1>Registros</h1>
+    <hr>
+    <a href="#" onclick="document.getElementById('add').hidden=false">Adicionar</a> |
+    <a href="#" onclick="update()">Atualizar</a>
+    <div hidden="hidden" id='add'>
+        <hr>
+        <h3>Adicionar</h3>
+        <form name="fadd">
+            Nome: <input name="anome"><br> Conteúdo: <textarea name="aconteudo"></textarea><br>
+            <button onclick="add();return false;">Adicionar</button>
+        </form>
+    </div>
+    <div hidden="hidden" id='edit'>
+        <hr>
+        <h3>Editar</h3>
+        <form name="fedit">
+            <input name="eid" hidden="hidden"> Nome: <input name="enome"><br> Conteúdo: <textarea name="econteudo"></textarea><br>
+            <button onclick="edit(); return false;">Editar</button>
+        </form>
+    </div>
+    <hr>
+    <div id="regs">
+        Carregando...
+        <!--<div>
+        <h2>Nome</h2>
+        <p>Conteúdo</p>
+        <div style="text-align: right"><a href="#" onclick="s_edit(1)">Editar</a> |
+            <a href="#" onclick="del(1)">Excluir</a></div>
+    </div>-->
+    </div>
+
+</body>
+
+</html>

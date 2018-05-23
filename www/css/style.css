@@ -1,0 +1,65 @@
+.loading {
+    -animation: spin 1s infinite linear;
+    -webkit-animation: spin2 1s infinite linear;
+}
+
+.load_tr{
+    display: table-cell !important;
+}
+
+.description{
+    padding-left:15px;
+    text-align: justify;
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
+
+@media screen and (max-width: 720px) {
+    table tr td:last-child, table tr th:last-child {
+        width: 60px;
+    }
+    .tbl_projeto tr td:nth-child(1), .tbl_projeto tr th:nth-child(1), .tbl_projeto tr td:nth-child(3), .tbl_projeto tr th:nth-child(3) {
+        display:none;
+    }
+    .tbl_cliente tr td:nth-child(2), .tbl_cliente tr th:nth-child(2), .tbl_cliente tr td:nth-child(3), .tbl_cliente tr th:nth-child(3){
+        display: none;
+    }
+}
+
+@media screen and (min-width: 721px) {
+    table tr td:last-child, table tr th:last-child {
+        width: 120px;
+    }
+    .tbl_projeto tr th:nth-child(5)::after{
+        content: ' detalhes';
+    }
+    .tbl_projeto tr td:nth-child(5) button::after{
+        content: ' Visualizar';
+    }
+    .tbl_cliente tr th:nth-child(4)::after{
+        content: ' detalhes';
+    }
+    .tbl_cliente tr td:nth-child(4) button::after{
+        content: ' Visualizar';
+    }
+    .btn_editar::after{
+        content: ' Editar';
+    }
+    .btn_excluir::after{
+        content: ' Excluir';
+    }
+    #btn_finalizar.btn-success::after{
+        content: ' Marcar como entregue';
+    }
+    #btn_finalizar.btn-warning::after{
+        content: ' Marcar como não entregue';
+    }
+}
